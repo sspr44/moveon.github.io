@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoveOn – Maxis Bewegungsabenteuer | Hochschule Bochum</title>
+<meta name="description" content="MoveOn Kinder-Version: Begleite den Hund Maxi durch eine 30-Tage-Bewegungschallenge. Ein Forschungsprojekt der Hochschule Bochum.">
+<meta name="theme-color" content="#C4002F">
+<link rel="icon" type="image/png" href="assets/img/hsbo-logo.png">
+<link rel="apple-touch-icon" href="assets/img/hsbo-logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MoveOn – Maxis Bewegungsabenteuer | Hochschule Bochum">
+<meta property="og:description" content="MoveOn Kinder-Version: Begleite den Hund Maxi durch eine 30-Tage-Bewegungschallenge. Ein Forschungsprojekt der Hochschule Bochum.">
+<meta property="og:image" content="assets/img/hsbo-logo.png">
+<link rel="stylesheet" href="assets/css/kinder.css">
+</head>
+<body>
+
+
+<header class="app-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img class="hsbo-logo-img" src="assets/img/hsbo-logo.png" alt="Logo der Hochschule Bochum">
+      <div class="brand-text">
+        <strong>MoveOn</strong>
+        <small data-i18n="subtitle">Digitale Bewegungsförderung – Hochschule Bochum</small>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav class="main-nav" aria-label="Hauptnavigation">
+        <a href="#start" data-i18n="nav_start">Start</a>
+        <a href="#minispiele" data-i18n="nav_minigames">Mini-Spiele</a>
+        <a href="#fortschritt" data-i18n="nav_progress">Fortschritt</a>
+        <button class="parent-info-btn" onclick="openModal('parentInfoModal')"><span data-i18n="nav_parents">Für Eltern &amp; Lehrkräfte</span></button>
+      </nav>
+      <button class="parent-info-btn" id="changeAudienceBtn" data-i18n="nav_change_audience">Zielgruppe wechseln</button>
+      <select id="langSelect" aria-label="Sprache wählen">
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="tr">Türkçe</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<!-- ================= ENTRY GATE (links to the MoveOn platform) ================= -->
+<div id="audienceGate">
+  <div class="gate-card">
+    <h1 data-i18n="gate_title">Für wen suchst du heute Bewegungsangebote?</h1>
+    <p class="gate-lead" data-i18n="gate_subtitle">Wähle eine Gruppe aus – die Seite passt sich sofort an.</p>
+    <div class="gate-grid">
+      <button class="gate-option" data-audience="kind">
+        <span class="emoji" aria-hidden="true">🧒</span>
+        <span class="gate-name" data-i18n="gate_kind_name">Kinder</span>
+        <span class="gate-age" data-i18n="gate_kind_age">6–12 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="jugend">
+        <span class="emoji" aria-hidden="true">🧑‍🎤</span>
+        <span class="gate-name" data-i18n="gate_jugend_name">Jugendliche</span>
+        <span class="gate-age" data-i18n="gate_jugend_age">13–17 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="erwachsene">
+        <span class="emoji" aria-hidden="true">🧑‍💼</span>
+        <span class="gate-name" data-i18n="gate_erwachsene_name">Erwachsene</span>
+        <span class="gate-age" data-i18n="gate_erwachsene_age">18–64 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="senior">
+        <span class="emoji" aria-hidden="true">🧓</span>
+        <span class="gate-name" data-i18n="gate_senior_name">Senior*innen</span>
+        <span class="gate-age" data-i18n="gate_senior_age">65+ Jahre</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<main class="container">
+
+<div id="appContent">
+  <section class="hero" id="start">
+    <div class="hero-card">
+      <div class="hero-text">
+        <h1 data-i18n="hello_title">Hallo! Ich bin Maxi</h1>
+        <p data-i18n="intro_p1">Ich liebe Bewegung und Abenteuer!</p>
+        <p data-i18n="intro_p2">Wenn du jeden Tag Übungen machst, bekomme ich leckeres Futter und werde richtig fröhlich.</p>
+        <p data-i18n="intro_p3">Schaffst du heute 3 Übungen, bekommt mein Futternapf eine neue Portion Futter.</p>
+        <p><strong data-i18n="intro_p4">Hilf mir dabei, in den nächsten 30 Tagen glücklich und fit zu bleiben!</strong></p>
+        <button class="btn" id="startBtn" data-i18n="start_btn">Los geht's!</button>
+        <div class="day-badges">
+          <div class="day-badge"><div class="num"><span id="dayX">1</span>/30</div><div data-i18n="day_label">Tag</div></div>
+          <div class="day-badge"><div class="bowls" id="bowlsDisplay"><span class="bowl empty">🥣</span><span class="bowl empty">🥣</span><span class="bowl empty">🥣</span></div><div data-i18n="bowls_label">Näpfe heute</div></div>
+        </div>
+      </div>
+      <div class="maxi-display mood-neutral" id="maxiDisplay" role="img" aria-label="Maxi, der animierte Hund">
+        <svg viewBox="0 0 240 220" xmlns="http://www.w3.org/2000/svg">
+          <g id="tailGroup">
+            <path d="M172,140 C202,124 208,92 188,68" fill="none" stroke="#C9884B" stroke-width="20" stroke-linecap="round"/>
+          </g>
+          <g id="bodyBounce">
+            <ellipse cx="120" cy="152" rx="56" ry="46" fill="#E3A15B"/>
+            <ellipse cx="120" cy="168" rx="32" ry="26" fill="#FFF3DC"/>
+            <ellipse cx="93" cy="196" rx="15" ry="20" fill="#E3A15B"/>
+            <ellipse cx="93" cy="212" rx="13" ry="9" fill="#FFF3DC"/>
+            <ellipse cx="147" cy="196" rx="15" ry="20" fill="#E3A15B"/>
+            <ellipse cx="147" cy="212" rx="13" ry="9" fill="#FFF3DC"/>
+            <ellipse cx="120" cy="140" rx="38" ry="9" fill="#C4002F"/>
+            <circle cx="120" cy="149" r="6" fill="#FFD23F"/>
+            <g id="earLeft">
+              <path d="M82,78 Q56,98 66,140 Q86,130 92,94 Z" fill="#B97A3E"/>
+            </g>
+            <g id="earRight">
+              <path d="M158,78 Q184,98 174,140 Q154,130 148,94 Z" fill="#B97A3E"/>
+            </g>
+            <circle cx="120" cy="96" r="44" fill="#E3A15B"/>
+            <g id="eyesGroup">
+              <circle cx="102" cy="90" r="8" fill="#ffffff"/>
+              <circle id="pupilL" cx="104" cy="90" r="4" fill="#2b1a10"/>
+              <circle cx="138" cy="90" r="8" fill="#ffffff"/>
+              <circle id="pupilR" cx="136" cy="90" r="4" fill="#2b1a10"/>
+            </g>
+            <ellipse cx="120" cy="110" rx="8" ry="6" fill="#2b1a10"/>
+            <path id="mouthPath" d="M104,120 Q120,132 136,120" fill="none" stroke="#2b1a10" stroke-width="3" stroke-linecap="round"/>
+          </g>
+          <g id="eatingBowl" opacity="0">
+            <ellipse cx="120" cy="180" rx="24" ry="10" fill="#B0B0B0"/>
+            <ellipse cx="120" cy="174" rx="21" ry="9" fill="#ffffff" stroke="#C9884B" stroke-width="3"/>
+            <ellipse cx="120" cy="171" rx="14" ry="5" fill="#C4002F"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BEWEGUNGS-BAUSTEINE ================= -->
+  <section id="minispiele" style="margin-top:2rem;">
+    <h2 class="section-title"><span data-i18n="minigames_title">Maxis Mini-Abenteuer</span></h2>
+    <p style="color:#666; font-size:.9rem; width:100%;" data-i18n="minigames_intro">Kooperative Bewegungs-Abenteuer aus dem MoveOn-Forschungsprojekt – am besten gemeinsam mit Familie, Klasse oder Freunden spielen.</p>
+
+    <div class="game-filter-bar">
+      <label class="fav-filter-label">
+        <input type="checkbox" id="favOnlyFilter">
+        <span>♥ <span data-i18n="filter_fav_only">Nur Favoriten</span></span>
+      </label>
+      <label class="setting-filter-label">
+        <span data-i18n="filter_setting_label">Ort:</span>
+        <select id="settingFilter">
+          <option value="" data-i18n="setting_all">Alle Orte</option>
+          <option value="zuhause" data-i18n="setting_home">🏠 Zuhause</option>
+          <option value="drinnen" data-i18n="setting_indoor">🏫 Drinnen</option>
+          <option value="draussen" data-i18n="setting_outdoor">🌳 Draußen</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="game-grid" id="gameGrid">
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g1">
+        <button class="fav-heart" data-fav="g1" aria-label="Favorit">♡</button><div class="game-icon">🌴</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g1_title">Dschungel-Expedition</h3>
+        <p data-i18n="card_g1_desc">Erforsche den Dschungel und meistere jede Bewegungsstation der Expedition.</p>
+        <button class="btn secondary small" data-game="g1" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g2">
+        <button class="fav-heart" data-fav="g2" aria-label="Favorit">♡</button><div class="game-icon">👹</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g2_title">Monster füttern</h3>
+        <p data-i18n="card_g2_desc">Füttere das hüpfende Monster mit lustigen Sprung- und Bewegungsaufgaben.</p>
+        <button class="btn secondary small" data-game="g2" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g3">
+        <button class="fav-heart" data-fav="g3" aria-label="Favorit">♡</button><div class="game-icon">🚀</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g3_title">Weltraum-Mission</h3>
+        <p data-i18n="card_g3_desc">Starte durch ins All und absolviere spannende Weltraum-Bewegungsmissionen.</p>
+        <button class="btn secondary small" data-game="g3" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g4">
+        <button class="fav-heart" data-fav="g4" aria-label="Favorit">♡</button><div class="game-icon">🪄</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g4_title">Die Zauber-Akademie</h3>
+        <p data-i18n="card_g4_desc">Werde Zauberlehrling und übe magische Bewegungs-Zaubersprüche.</p>
+        <button class="btn secondary small" data-game="g4" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g5">
+        <button class="fav-heart" data-fav="g5" aria-label="Favorit">♡</button><div class="game-icon">🐠</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g5_title">U-Boot-Mission Korallenriff</h3>
+        <p data-i18n="card_g5_desc">Tauche ab zur Rettungsmission am Korallenriff – ein U-Boot-Abenteuer mit Bewegung.</p>
+        <button class="btn secondary small" data-game="g5" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g6">
+        <button class="fav-heart" data-fav="g6" aria-label="Favorit">♡</button><div class="game-icon">🌲</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g6_title">Wald-Parcours</h3>
+        <p data-i18n="card_g6_desc">Bahne dir deinen Weg durch den Wald-Parcours voller Bewegungsrätsel.</p>
+        <button class="btn secondary small" data-game="g6" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g7">
+        <button class="fav-heart" data-fav="g7" aria-label="Favorit">♡</button><div class="game-icon">🔮</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g7_title">Das stumme Orakel</h3>
+        <p data-i18n="card_g7_desc">Errate die Bewegung, die das stumme Orakel dir zeigt.</p>
+        <button class="btn secondary small" data-game="g7" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g8">
+        <button class="fav-heart" data-fav="g8" aria-label="Favorit">♡</button><div class="game-icon">🏝️</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g8_title">Schatzsucher von Korallen-Bay</h3>
+        <p data-i18n="card_g8_desc">Suche als Schatzsucher*in die Korallen-Bay nach verborgenen Bewegungsschätzen ab.</p>
+        <button class="btn secondary small" data-game="g8" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g9">
+        <button class="fav-heart" data-fav="g9" aria-label="Favorit">♡</button><div class="game-icon">🦋</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g9_title">Der Achtsamkeits-Garten</h3>
+        <p data-i18n="card_g9_desc">Besuche den Achtsamkeits-Garten und bewege dich sanft wie die Tiere dort.</p>
+        <button class="btn secondary small" data-game="g9" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g10">
+        <button class="fav-heart" data-fav="g10" aria-label="Favorit">♡</button><div class="game-icon">🎼</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g10_title">Das Orchester der Elemente</h3>
+        <p data-i18n="card_g10_desc">Dirigiere das Orchester der Elemente mit deinen eigenen Bewegungen.</p>
+        <button class="btn secondary small" data-game="g10" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g11">
+        <button class="fav-heart" data-fav="g11" aria-label="Favorit">♡</button><div class="game-icon">🦖</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g11_title">Klopps Abenteuer-Labor</h3>
+        <p data-i18n="card_g11_desc">Klopp führt dich durch sein Abenteuer-Labor voller Bewegungsexperimente.</p>
+        <button class="btn secondary small" data-game="g11" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g12">
+        <button class="fav-heart" data-fav="g12" aria-label="Favorit">♡</button><div class="game-icon">🔍</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g12_title">Die Entdeckungs-Reise</h3>
+        <p data-i18n="card_g12_desc">Begib dich auf eine Entdeckungs-Reise über drei spannende Etappen.</p>
+        <button class="btn secondary small" data-game="g12" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g13">
+        <button class="fav-heart" data-fav="g13" aria-label="Favorit">♡</button><div class="game-icon">🧪</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g13_title">Das Bewegungs-Labor-Duell</h3>
+        <p data-i18n="card_g13_desc">Tretet im Bewegungs-Labor-Duell an 30 Stationen gegeneinander an.</p>
+        <button class="btn secondary small" data-game="g13" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g14">
+        <button class="fav-heart" data-fav="g14" aria-label="Favorit">♡</button><div class="game-icon">🎵</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g14_title">Das Klatsch- & Sound-Labor</h3>
+        <p data-i18n="card_g14_desc">Klatsche und bewege dich im Rhythmus im Klatsch- & Sound-Labor.</p>
+        <button class="btn secondary small" data-game="g14" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g15">
+        <button class="fav-heart" data-fav="g15" aria-label="Favorit">♡</button><div class="game-icon">⚡</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g15_title">Forscher-Reaktions- & Sprung-Labor</h3>
+        <p data-i18n="card_g15_desc">Teste deine Reaktion und Sprungkraft im Forscher-Labor.</p>
+        <button class="btn secondary small" data-game="g15" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g16">
+        <button class="fav-heart" data-fav="g16" aria-label="Favorit">♡</button><div class="game-icon">✨</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g16_title">Die Zauberhafte Bewegungsreise</h3>
+        <p data-i18n="card_g16_desc">Begib dich auf eine zauberhafte Reise voller Bewegungsstationen.</p>
+        <button class="btn secondary small" data-game="g16" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g17">
+        <button class="fav-heart" data-fav="g17" aria-label="Favorit">♡</button><div class="game-icon">🎶</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g17_title">Die Bewegungs-Klang-Werkstatt</h3>
+        <p data-i18n="card_g17_desc">Werde zum Klangkünstler in der Bewegungs-Klang-Werkstatt.</p>
+        <button class="btn secondary small" data-game="g17" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="draussen" data-game-key="g18">
+        <button class="fav-heart" data-fav="g18" aria-label="Favorit">♡</button><div class="game-icon">🌲</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_outdoor_short">🌳</span></div>
+        <h3 data-i18n="card_g18_title">Die große Outdoor-Schatzsuche</h3>
+        <p data-i18n="card_g18_desc">Auf zur großen Schatzsuche im Freien – mit Karte und Bewegungsaufgaben.</p>
+        <button class="btn secondary small" data-game="g18" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="draussen" data-game-key="g19">
+        <button class="fav-heart" data-fav="g19" aria-label="Favorit">♡</button><div class="game-icon">🏘️</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_outdoor_short">🌳</span></div>
+        <h3 data-i18n="card_g19_title">Die Quartier-Entdecker-Tour</h3>
+        <p data-i18n="card_g19_desc">Entdecke dein Quartier auf einer bewegten Erkundungstour.</p>
+        <button class="btn secondary small" data-game="g19" data-i18n="btn_play">▶ Starten</button>
+      </div>
+      <div class="game-card" data-settings="zuhause drinnen" data-game-key="g20">
+        <button class="fav-heart" data-fav="g20" aria-label="Favorit">♡</button><div class="game-icon">🎡</div><div class="setting-badges"><span class="setting-badge" data-i18n="setting_home_short">🏠</span><span class="setting-badge" data-i18n="setting_indoor_short">🏫</span></div>
+        <h3 data-i18n="card_g20_title">Das Bewegungsglücksrad</h3>
+        <p data-i18n="card_g20_desc">Drehe das Bewegungsglücksrad und erlebe eine zufällige Überraschungsübung.</p>
+        <button class="btn secondary small" data-game="g20" data-i18n="btn_play">▶ Starten</button>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ================= PROGRESS ================= -->
+  <section id="fortschritt" style="margin-top:2rem;">
+    <h2 class="section-title">📅 <span data-i18n="progress_title">Fortschritt – 30 Tage</span></h2>
+    <div class="card">
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="num" id="statActiveWeek">0</div><div data-i18n="stat_active_week">Aktive Tage/Woche</div></div>
+        <div class="stat-box"><div class="num" id="statSuccessWeeks">0</div><div data-i18n="stat_success_weeks">Erfolgreiche Wochen</div></div>
+        <div class="stat-box"><div class="num" id="statStreak">0</div><div data-i18n="stat_streak">Aktuelle Serie</div></div>
+        <div class="stat-box"><div class="num" id="statTotalBowls">0</div><div data-i18n="stat_total_bowls">Futternäpfe gesamt</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+</main>
+
+<div class="modal-overlay" id="gameOverlay">
+  <div class="game-modal">
+    <button class="close-x" id="closeGameModal" aria-label="Schließen">✕</button>
+    <iframe id="gameFrame" title="Mini-Spiel" sandbox="allow-scripts allow-same-origin"></iframe>
+    <div class="game-modal-footer">
+      <button class="btn secondary" id="finishGameBtn" data-i18n="btn_finish_game">✅ Fertig gespielt! Maxi füttern</button>
+      <p id="gameResultText"></p>
+    </div>
+  </div>
+</div>
+
+<canvas id="confettiCanvas"></canvas>
+<div id="snackbar" role="status" aria-live="polite"></div>
+
+
+
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="footer-content">
+    <p data-i18n="footer_p1">
+      <strong>MoveOn</strong><br>
+      Prototypische KI-gestützte Anwendung zur digitalen Bewegungsförderung
+    </p>
+
+    <p data-i18n="footer_p2">
+      Entwickelt im Forschungsprojekt
+      <em>„MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“</em>
+      des <strong>Fachbereichs Gesundheitswissenschaften der Hochschule Bochum</strong>.
+    </p>
+
+    <p data-i18n="footer_p3">
+      Die Anwendung dient ausschließlich Forschungs-, Lehr- und Demonstrationszwecken
+      und stellt kein Medizinprodukt sowie keine medizinische oder therapeutische
+      Beratung dar. Teile der Inhalte wurden mit Unterstützung von KI-Systemen erstellt.
+    </p>
+
+    <p data-i18n="footer_p4">
+      <strong>Datenschutz:</strong> Innerhalb dieser Anwendung werden keine
+      personenbezogenen Daten erhoben, gespeichert oder dauerhaft verarbeitet.
+      Die Nutzung erfolgt auf eigene Verantwortung. Bitte achten Sie auf ausreichendes
+      Aufwärmen, eine sichere Umgebung und brechen Sie Übungen bei Beschwerden sofort ab.
+    </p>
+
+    <p>
+      <strong>Hochschule Bochum – Fachbereich Gesundheitswissenschaften</strong><br>
+      <span data-i18n="footer_ansprechpartner">Ansprechpartner</span>: Dr. Alina Napetschnig &amp; Prof. Dr. Wolfgang Deiters<br>
+      <span data-i18n="footer_kontakt_label">Kontakt</span>:
+      <a href="mailto:alina.napetschnig@hs-bochum.de">alina.napetschnig@hs-bochum.de</a> |
+      <a href="mailto:wolfgang.deiters@hs-bochum.de">wolfgang.deiters@hs-bochum.de</a>
+    </p>
+
+    <div class="footer-links">
+      <a href="#" onclick="event.preventDefault(); openModal('impressumModal');" data-i18n="footer_link_impressum">Impressum</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('datenschutzModal');" data-i18n="footer_link_datenschutz">Datenschutz</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('haftungModal');" data-i18n="footer_link_haftung">Haftung &amp; Sicherheit</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('kontaktModal');" data-i18n="footer_link_kontakt">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= IMPRESSUM ================= -->
+
+<div id="impressumModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('impressumModal')">&times;</span>
+    <h2 data-i18n="modal_impressum_title">Impressum</h2>
+
+    <p data-i18n="modal_impressum_p1">
+      <strong>Verantwortlich für den Inhalt dieser prototypischen Anwendung:</strong>
+    </p>
+
+    <p>
+      Hochschule Bochum<br>
+      Fachbereich Gesundheitswissenschaften<br>
+      Forschungsprojekt <em>„MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“</em>
+    </p>
+
+    <p>
+      Ansprechpartner:<br>
+      Dr. Alina Napetschnig<br>
+      Prof. Dr. Wolfgang Deiters
+    </p>
+
+    <p>
+      E-Mail:<br>
+      alina.napetschnig@hs-bochum.de<br>
+      wolfgang.deiters@hs-bochum.de
+    </p>
+
+    <p data-i18n="modal_impressum_p3">
+      Diese Anwendung wurde im Rahmen eines Forschungs- und Entwicklungsprojekts erstellt
+      und dient ausschließlich wissenschaftlichen, didaktischen und demonstrativen Zwecken.
+    </p>
+
+    <p data-i18n="modal_impressum_stand">Stand: Juli 2026</p>
+  </div>
+</div>
+
+<!-- ================= DATENSCHUTZ ================= -->
+
+<div id="datenschutzModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('datenschutzModal')">&times;</span>
+    <h2 data-i18n="modal_datenschutz_title">Datenschutz</h2>
+
+    <p data-i18n="modal_datenschutz_p1">
+      Diese prototypische HTML-Anwendung wurde so konzipiert, dass innerhalb der Anwendung
+      keine personenbezogenen Daten erhoben, gespeichert oder dauerhaft verarbeitet werden.
+    </p>
+
+    <ul>
+      <li data-i18n="modal_datenschutz_li1">keine Registrierung,</li>
+      <li data-i18n="modal_datenschutz_li2">keine Benutzerkonten,</li>
+      <li data-i18n="modal_datenschutz_li3">keine Speicherung von Eingaben,</li>
+      <li data-i18n="modal_datenschutz_li4">keine Bewegungs- oder Gesundheitsprofile,</li>
+      <li data-i18n="modal_datenschutz_li5">keine Weitergabe personenbezogener Daten an Dritte.</li>
+    </ul>
+
+    <p data-i18n="modal_datenschutz_p2">
+      Eine Identifizierung einzelner Nutzerinnen oder Nutzer über diese Anwendung ist nicht vorgesehen.
+    </p>
+
+    <p data-i18n="modal_datenschutz_p3">
+      Sofern die Anwendung über einen Webserver bereitgestellt wird, können technisch notwendige
+      Server-Logdaten (z. B. IP-Adresse, Datum, Uhrzeit oder Browsertyp) durch den jeweiligen
+      Hosting-Anbieter verarbeitet werden. Diese Verarbeitung erfolgt außerhalb der Anwendung selbst
+      und liegt in der Verantwortung des Hosting-Anbieters.
+    </p>
+
+    <p data-i18n="modal_datenschutz_p4">
+      Die Anwendung verwendet keine Tracking-, Analyse- oder Marketingdienste
+      (z. B. Google Analytics, Meta Pixel oder vergleichbare Technologien).
+    </p>
+  </div>
+</div>
+
+<!-- ================= HAFTUNG & SICHERHEIT ================= -->
+
+<div id="haftungModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('haftungModal')">&times;</span>
+    <h2 data-i18n="modal_haftung_title">Haftung &amp; Sicherheit</h2>
+
+    <p data-i18n="modal_haftung_p1">
+      Diese Anwendung ist ein <strong>nicht-medizinischer, wissenschaftlicher Demonstrator</strong>
+      im Rahmen des Forschungsprojekts MoveOn der Hochschule Bochum. Sie ersetzt keine ärztliche,
+      physiotherapeutische oder sonstige fachliche Beratung.
+    </p>
+
+    <p data-i18n="modal_haftung_p2">
+      <strong>Vor der Nutzung bitte beachten:</strong>
+    </p>
+    <ul>
+      <li data-i18n="modal_haftung_li1">Übungen nur in einem sicheren, aufgeräumten Umfeld mit ausreichend Platz durchführen.</li>
+      <li data-i18n="modal_haftung_li2">Vor körperlicher Aktivität angemessen aufwärmen.</li>
+      <li data-i18n="modal_haftung_li3">Auf den eigenen Körper hören und bei Schmerzen, Schwindel oder Unwohlsein die Übung sofort abbrechen.</li>
+      <li data-i18n="modal_haftung_li4">Bei bestehenden gesundheitlichen Einschränkungen vorab ärztlichen Rat einholen.</li>
+      <li data-i18n="modal_haftung_li5">Kinder sollten die Anwendung möglichst in Begleitung einer erwachsenen Aufsichtsperson nutzen.</li>
+    </ul>
+
+    <p data-i18n="modal_haftung_p3">
+      Für die Inhalte wird keine Haftung hinsichtlich Vollständigkeit, Aktualität oder gesundheitlicher
+      Folgen der Nutzung übernommen. Die Nutzung erfolgt auf eigene Verantwortung.
+    </p>
+  </div>
+</div>
+
+<!-- ================= KONTAKT ================= -->
+
+<div id="kontaktModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('kontaktModal')">&times;</span>
+    <h2 data-i18n="modal_kontakt_title">Kontakt</h2>
+
+    <p data-i18n="modal_kontakt_p1">
+      Bei Fragen, Anregungen oder Feedback zum Forschungsprojekt MoveOn erreichen Sie uns unter:
+    </p>
+
+    <p>
+      <strong>Hochschule Bochum</strong><br>
+      Fachbereich Gesundheitswissenschaften<br>
+      Forschungsprojekt „MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“
+    </p>
+
+    <p>
+      Dr. Alina Napetschnig<br>
+      E-Mail: <a href="mailto:alina.napetschnig@hs-bochum.de">alina.napetschnig@hs-bochum.de</a>
+    </p>
+    <p>
+      Prof. Dr. Wolfgang Deiters<br>
+      E-Mail: <a href="mailto:wolfgang.deiters@hs-bochum.de">wolfgang.deiters@hs-bochum.de</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= ELTERN- & LEHRKRÄFTE-INFO (eingebettet, keine separate Datei) ================= -->
+
+<div id="parentInfoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('parentInfoModal')">&times;</span>
+    <h2 data-i18n="pi_title">Für Eltern &amp; Lehrkräfte</h2>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_why">Warum ist Bewegung für Kinder so wichtig?</h3>
+    <p data-i18n="pi_p_why">Regelmäßige körperliche Aktivität unterstützt Kinder in vielen Bereichen ihrer Entwicklung:</p>
+    <ul>
+      <li data-i18n="pi_li_body"><strong>Körperlich:</strong> stärkt Herz-Kreislauf-System, Muskeln und Knochen.</li>
+      <li data-i18n="pi_li_motor"><strong>Motorisch:</strong> fördert Koordination, Gleichgewicht und Grundfertigkeiten wie Laufen, Springen und Werfen.</li>
+      <li data-i18n="pi_li_cognitive"><strong>Kognitiv:</strong> wird mit besserer Konzentration und schulischer Leistungsfähigkeit in Verbindung gebracht.</li>
+      <li data-i18n="pi_li_emotional"><strong>Emotional &amp; sozial:</strong> stärkt Selbstvertrauen, Stimmung und soziale Fähigkeiten, insbesondere bei gemeinsamer Bewegung.</li>
+    </ul>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_who">Empfehlungen der Weltgesundheitsorganisation (WHO)</h3>
+    <p data-i18n="pi_p_who">Für Kinder und Jugendliche im Alter von 5–17 Jahren empfiehlt die WHO:</p>
+    <div class="who-box">
+      <ul>
+        <li data-i18n="pi_who_li1">Mindestens <strong>60 Minuten pro Tag</strong> moderate bis intensive körperliche Aktivität, überwiegend aerober Art.</li>
+        <li data-i18n="pi_who_li2">An mindestens <strong>3 Tagen pro Woche</strong> zusätzlich intensivere Aktivitäten, die Muskeln und Knochen kräftigen.</li>
+        <li data-i18n="pi_who_li3">Sitzende, bildschirmbasierte Freizeitaktivitäten sollten begrenzt werden.</li>
+        <li data-i18n="pi_who_li4">Jede zusätzliche Bewegung zählt – auch kürzere Einheiten unterhalb von 60 Minuten sind wertvoll.</li>
+      </ul>
+    </div>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_moveon">Wie unterstützt MoveOn dabei?</h3>
+    <p data-i18n="pi_p_moveon">MoveOn übersetzt diese Empfehlungen in kurze, spielerische Bewegungseinheiten für zu Hause, die Schule oder die Nachmittagsbetreuung:</p>
+    <ul>
+      <li data-i18n="pi_moveon_li1">Zehn kooperative Mini-Abenteuer, die am besten gemeinsam mit anderen Kindern gespielt werden.</li>
+      <li data-i18n="pi_moveon_li2">Ein einfaches Tagesziel: <strong>3 abgeschlossene Aktivitäten = ein erfolgreicher Bewegungstag</strong>, orientiert an der 60-Minuten-Empfehlung der WHO.</li>
+      <li data-i18n="pi_moveon_li3">Positive, kindgerechte Rückmeldung statt Leistungsdruck – es gibt keine Highscores, Vergleiche zwischen Kindern oder negative Bewertungen.</li>
+      <li data-i18n="pi_moveon_li4">Keine Registrierung und keine Speicherung personenbezogener Daten (siehe Datenschutzhinweise weiter unten).</li>
+    </ul>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_tips">Praktische Tipps für den Alltag</h3>
+    <ul>
+      <li data-i18n="pi_tips_li1">Lassen Sie Kinder die Mini-Abenteuer nach Möglichkeit gemeinsam mit Geschwistern, Mitschüler*innen oder Freund*innen spielen – viele Übungen sind bewusst kooperativ angelegt.</li>
+      <li data-i18n="pi_tips_li2">Ein kurzer, aber täglicher Rhythmus wirkt oft nachhaltiger als seltene, lange Einheiten.</li>
+      <li data-i18n="pi_tips_li3">Achten Sie auf ausreichend Platz und einen rutschfesten Untergrund, bevor eine Bewegungsaufgabe gestartet wird.</li>
+      <li data-i18n="pi_tips_li4">Nehmen Sie Kinder ernst, wenn sie eine Übung als unangenehm oder schmerzhaft empfinden, und passen Sie die Aktivität entsprechend an oder lassen Sie sie aus.</li>
+    </ul>
+
+    <p style="font-size:.85rem; color:#666;" data-i18n="pi_disclaimer">
+      Diese Informationen fassen allgemeine, öffentlich zugängliche Empfehlungen der WHO
+      zusammen und ersetzen keine individuelle medizinische oder pädagogische Beratung.
+      Bei spezifischen Fragen zur Gesundheit oder Entwicklung eines Kindes wenden Sie sich
+      bitte an eine Kinderärztin, einen Kinderarzt oder eine andere Fachperson.
+    </p>
+  </div>
+</div>
+
+
+<script src="assets/js/kinder-spiele.js"></script>
+<script src="assets/js/kinder.js"></script>
+</body>
+</html>

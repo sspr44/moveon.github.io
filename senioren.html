@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoveOn – Ihr Bewegungs-Spaziergang | Hochschule Bochum</title>
+<meta name="description" content="MoveOn Senior*innen-Version: Ihr persönlicher Begleiter führt Sie über eine Bewegungs-Landkarte zu drei kleinen Übungen am Tag. Ein Forschungsprojekt der Hochschule Bochum.">
+<meta name="theme-color" content="#C4002F">
+<link rel="icon" type="image/png" href="assets/img/hsbo-logo.png">
+<link rel="apple-touch-icon" href="assets/img/hsbo-logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MoveOn – Ihr Bewegungs-Spaziergang | Hochschule Bochum">
+<meta property="og:description" content="MoveOn Senior*innen-Version: Ihr persönlicher Begleiter führt Sie über eine Bewegungs-Landkarte zu drei kleinen Übungen am Tag. Ein Forschungsprojekt der Hochschule Bochum.">
+<meta property="og:image" content="assets/img/hsbo-logo.png">
+<link rel="stylesheet" href="assets/css/senioren.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img class="hsbo-logo-img" src="assets/img/hsbo-logo.png" alt="Logo der Hochschule Bochum">
+      <div class="brand-text">
+        <strong>MoveOn</strong>
+        <small data-i18n="subtitle">Digitale Bewegungsförderung – Hochschule Bochum</small>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav class="main-nav" aria-label="Hauptnavigation">
+        <button class="parent-info-btn" id="whoNavBtn"><span data-i18n="nav_who">WHO-Empfehlungen</span></button>
+      </nav>
+      <button class="parent-info-btn" id="changeAudienceBtn" data-i18n="nav_change_audience">Zielgruppe wechseln</button>
+      <select id="langSelect" aria-label="Sprache wählen">
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="tr">Türkçe</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
+  </div>
+</header>
+<!-- ================= ENTRY GATE (links to the MoveOn platform) ================= -->
+<div id="audienceGate">
+  <div class="gate-card">
+    <h1 data-i18n="gate_title">Für wen suchst du heute Bewegungsangebote?</h1>
+    <p class="gate-lead" data-i18n="gate_subtitle">Wähle eine Gruppe aus – die Seite passt sich sofort an.</p>
+    <div class="gate-grid">
+      <button class="gate-option" data-audience="kind">
+        <span class="emoji" aria-hidden="true">🧒</span>
+        <span class="gate-name" data-i18n="gate_kind_name">Kinder</span>
+        <span class="gate-age" data-i18n="gate_kind_age">6–12 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="jugend">
+        <span class="emoji" aria-hidden="true">🧑‍🎤</span>
+        <span class="gate-name" data-i18n="gate_jugend_name">Jugendliche</span>
+        <span class="gate-age" data-i18n="gate_jugend_age">13–17 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="erwachsene">
+        <span class="emoji" aria-hidden="true">🧑‍💼</span>
+        <span class="gate-name" data-i18n="gate_erwachsene_name">Erwachsene</span>
+        <span class="gate-age" data-i18n="gate_erwachsene_age">18–64 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="senior">
+        <span class="emoji" aria-hidden="true">🧓</span>
+        <span class="gate-name" data-i18n="gate_senior_name">Senior*innen</span>
+        <span class="gate-age" data-i18n="gate_senior_age">65+ Jahre</span>
+      </button>
+    </div>
+  </div>
+</div>
+<main class="container">
+  <!-- ================= FLOATING AVATAR (appears throughout the app) ================= -->
+  <div id="floatingAvatar" class="floating-avatar" aria-live="polite">
+    <div class="floating-avatar-bubble" id="floatingAvatarBubble"></div>
+    <div class="floating-avatar-face-wrap">
+      <div class="floating-avatar-face" aria-hidden="true">🧓</div>
+      <button type="button" id="avatarSoundToggle" class="avatar-sound-toggle" aria-label="Sprachausgabe ein/aus" title="Sprachausgabe ein/aus">🔊</button>
+    </div>
+  </div>
+
+  <div id="appContent">
+
+  <!-- ================= SCREEN 1: GREETING / NAME (optional personalization, reachable via the profile button) ================= -->
+  <section id="screenGreeting" class="senior-screen" hidden>
+    <div class="avatar-box">
+      <div class="avatar-illustration" aria-hidden="true">🧓</div>
+      <div class="avatar-speech" id="avatarSpeechGreeting" data-i18n="greeting_speech">Hallo! Wie heißen Sie?</div>
+    </div>
+    <div class="name-input-row">
+      <label for="userNameInput" data-i18n="name_label">Ihr Name:</label>
+      <input type="text" id="userNameInput" data-i18n-ph="name_placeholder" placeholder="z. B. Maria" autocomplete="given-name">
+      <button class="btn" id="nameContinueBtn" data-i18n="btn_continue">Weiter</button>
+    </div>
+    <button class="btn secondary" id="greetingSkipBtn" style="margin-top:1rem;" data-i18n="btn_back_map">◀ Zurück zur Karte</button>
+  </section>
+
+  <!-- ================= SCREEN 2: ANZEIGE ANPASSEN ================= -->
+  <section id="screenSettings" class="senior-screen" hidden>
+    <h2 data-i18n="settings_title">Anzeige anpassen</h2>
+    <p class="screen-lead" data-i18n="settings_lead">Stellen Sie die Seite so ein, wie es für Sie am angenehmsten ist.</p>
+    <div class="settings-grid">
+      <div class="setting-block">
+        <span class="setting-block-label" data-i18n="settings_fontsize_label">Schriftgröße</span>
+        <div class="toggle-group" role="group" aria-label="Schriftgröße wählen">
+          <button type="button" class="toggle-btn active" id="fontNormalBtn" data-i18n="settings_font_normal">Normal</button>
+          <button type="button" class="toggle-btn" id="fontLargeBtn" data-i18n="settings_font_large">Groß</button>
+        </div>
+      </div>
+      <div class="setting-block">
+        <label class="switch-label">
+          <input type="checkbox" id="simpleLangToggle">
+          <span data-i18n="settings_simple_label">Einfache Sprache aktivieren</span>
+        </label>
+      </div>
+    </div>
+    <div class="screen-nav">
+      <button class="btn secondary" id="settingsBackBtn" data-i18n="btn_back">Zurück</button>
+      <button class="btn" id="settingsContinueBtn" data-i18n="btn_continue">Weiter</button>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 3: MOBILITÄT / EINSCHRÄNKUNGEN ================= -->
+  <section id="screenMobility" class="senior-screen" hidden>
+    <h2 data-i18n="mobility_title">Damit wir passende Übungen auswählen können</h2>
+    <p class="screen-lead" data-i18n="mobility_lead">Wählen Sie aus, was auf Sie zutrifft (Mehrfachauswahl möglich).</p>
+    <div class="check-list" id="mobilityCheckList">
+      <label class="check-card"><input type="checkbox" value="rollstuhl"><span data-i18n="mobility_opt_rollstuhl">Ich nutze einen Rollstuhl</span></label>
+      <label class="check-card"><input type="checkbox" value="sitzen"><span data-i18n="mobility_opt_sitzen">Ich sitze häufig</span></label>
+      <label class="check-card"><input type="checkbox" value="gehen"><span data-i18n="mobility_opt_gehen">Ich habe Probleme beim Gehen</span></label>
+      <label class="check-card"><input type="checkbox" value="stehen"><span data-i18n="mobility_opt_stehen">Ich bin unsicher beim Stehen</span></label>
+      <label class="check-card"><input type="checkbox" value="gedaechtnis"><span data-i18n="mobility_opt_gedaechtnis">Ich habe leichte Gedächtnis- oder Konzentrationsprobleme</span></label>
+      <label class="check-card"><input type="checkbox" value="keine"><span data-i18n="mobility_opt_keine">Ich habe keine besonderen Einschränkungen</span></label>
+    </div>
+    <div class="screen-nav">
+      <button class="btn secondary" id="mobilityBackBtn" data-i18n="btn_back">Zurück</button>
+      <button class="btn" id="mobilityContinueBtn" data-i18n="btn_continue_map">Weiter zur Karte</button>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 5: ALLEINE / GRUPPE ================= -->
+  <section id="screenGroup" class="senior-screen" hidden>
+    <h2 data-i18n="group_title">Machen Sie die Übungen heute alleine oder gemeinsam?</h2>
+    <div class="opt-grid" id="groupOptGrid" role="radiogroup" aria-label="Alleine oder Gruppe auswählen">
+      <button type="button" class="opt-card" data-group="alleine" role="radio" aria-checked="false"><span class="opt-icon" aria-hidden="true">🧍</span><span data-i18n="group_opt_alleine">Alleine</span></button>
+      <button type="button" class="opt-card" data-group="gruppe" role="radio" aria-checked="false"><span class="opt-icon" aria-hidden="true">👥</span><span data-i18n="group_opt_gruppe">In einer Gruppe</span></button>
+      <button type="button" class="opt-card" data-group="angehoerige" role="radio" aria-checked="false"><span class="opt-icon" aria-hidden="true">🤝</span><span data-i18n="group_opt_angehoerige">Mit Angehörigen oder Betreuungspersonen</span></button>
+    </div>
+    <div id="groupHint" class="avatar-comment-box" style="display:none;">
+      <span class="comment-emoji" aria-hidden="true">💬</span>
+      <span id="groupHintText"></span>
+    </div>
+    <div class="screen-nav">
+      <button class="btn secondary" id="groupBackBtn" data-i18n="btn_back">Zurück</button>
+      <button class="btn" id="groupContinueBtn" data-i18n="btn_continue">Weiter</button>
+    </div>
+  </section>
+
+  <!-- ================= SCREEN 6: LANDKARTE (Hauptbereich) ================= -->
+  <section id="screenMap" class="senior-screen" hidden>
+    <p class="map-intro" data-i18n="map_intro">🗺️ Wählen Sie unten einen Ort nach Wunsch aus (z. B. „Zuhause") und tippen Sie auf ein Gebäude, um die Übung zu starten. 🌸 Die Blume oben links zeigt, wie viele der 3 Übungen Sie heute schon geschafft haben. 🔴 Nach jeder Übung erscheint ein Weg zwischen den besuchten Orten.</p>
+    <div class="map-top-bar">
+      <div class="map-filter-bar">
+        <span class="filter-label" data-i18n="filter_label">Ort:</span>
+        <select id="settingFilter" aria-label="Nach Ort filtern">
+          <option value="" data-i18n="filter_all">Alle Orte</option>
+          <option value="zuhause" data-i18n="filter_zuhause">🏠 Zuhause</option>
+          <option value="drinnen" data-i18n="filter_drinnen">🏫 Drinnen</option>
+          <option value="draussen" data-i18n="filter_draussen">🌳 Draußen</option>
+        </select>
+      </div>
+      <button type="button" id="openProfileBtn" class="profile-btn" title="Profil &amp; Einstellungen" aria-label="Profil &amp; Einstellungen">👤</button>
+    </div>
+
+    <div class="map-layout">
+    <div class="map-frame">
+    <div class="map-container" id="mapContainer" aria-label="Bewegungs-Stadtplan, Illustration einer Kleinstadt">
+      <svg id="routeSvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><polyline id="routeLine" points=""></polyline></svg>
+      <!-- map nodes are inserted by JavaScript from the exercises array -->
+    </div>
+    </div>
+
+    <div class="progress-panel">
+      <div class="flower-progress" id="flowerProgress" role="img" aria-label="0 von 3 Übungen">
+        <svg viewBox="0 0 120 130" aria-hidden="true">
+          <path d="M60 128 C 58 95, 58 70, 60 55" stroke="#5FA84F" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path d="M60 100 C 48 96, 42 88, 44 80" stroke="#5FA84F" stroke-width="4" fill="none" stroke-linecap="round" class="fp-leaf fp-leaf-1"/>
+          <path d="M60 112 C 72 108, 78 100, 76 92" stroke="#5FA84F" stroke-width="4" fill="none" stroke-linecap="round" class="fp-leaf fp-leaf-2"/>
+          <circle cx="60" cy="50" r="7" fill="#8BC46B" class="fp-bud"/>
+          <g class="fp-petals-1" transform="translate(60,48)">
+            <ellipse cx="0" cy="-13" rx="7" ry="13" fill="#FFB6C6"/>
+            <ellipse cx="0" cy="13" rx="7" ry="13" fill="#FFB6C6"/>
+            <ellipse cx="-13" cy="0" rx="13" ry="7" fill="#FF9FB4"/>
+            <ellipse cx="13" cy="0" rx="13" ry="7" fill="#FF9FB4"/>
+          </g>
+          <g class="fp-petals-2" transform="translate(60,48)">
+            <ellipse cx="-9" cy="-9" rx="8" ry="13" fill="#FFD23F" transform="rotate(-45)"/>
+            <ellipse cx="9" cy="-9" rx="8" ry="13" fill="#FFD23F" transform="rotate(45)"/>
+            <ellipse cx="-9" cy="9" rx="8" ry="13" fill="#FFC93F" transform="rotate(45)"/>
+            <ellipse cx="9" cy="9" rx="8" ry="13" fill="#FFC93F" transform="rotate(-45)"/>
+          </g>
+          <circle cx="60" cy="48" r="10" fill="#F4A73C" class="fp-center"/>
+          <g class="fp-sparkle">
+            <text x="80" y="24" font-size="16">✨</text>
+            <text x="30" y="30" font-size="13">✨</text>
+          </g>
+        </svg>
+      </div>
+      <div id="dailyProgressLabel">0/3</div>
+      <div class="goal-heading" data-i18n="goal_heading">Heutiges Ziel: 3 Übungen</div>
+      <p class="screen-lead" data-i18n="goal_explainer">Drei kleine Bewegungsstationen pro Tag helfen dabei, beweglich und aktiv zu bleiben.</p>
+      <div class="week-history" id="weekHistory" aria-hidden="true"></div>
+      <p class="week-history-label" id="weekHistoryLabel"></p>
+    </div>
+    </div>
+
+    <div class="discovery-box">
+      <div class="discovery-heading">
+        <span data-i18n="discovery_heading">🗺️ Ihre Stadt-Entdeckung</span>
+        <span id="discoveryCount">0 / 20</span>
+      </div>
+      <div class="discovery-track"><div class="discovery-fill" id="discoveryFill"></div></div>
+      <div class="badge-row" id="badgeRow"></div>
+    </div>
+  </section>
+
+  <!-- ================= SHARED MINI-GAME OVERLAY (embeds the original 20 exercises) ================= -->
+  <div class="modal-overlay" id="gameOverlay">
+    <div class="game-modal">
+      <button class="close-x" id="closeGameModal" aria-label="Schließen">✕</button>
+      <iframe id="gameFrame" title="Übung" sandbox="allow-scripts allow-same-origin"></iframe>
+      <div class="game-modal-footer">
+        <button class="btn secondary" id="finishGameBtn" data-i18n="btn_exercise_done">✅ Übung erledigt</button>
+        <p id="gameResultText"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SCREEN 8: TAGESABSCHLUSS ================= -->
+  <section id="screenComplete" class="senior-screen" hidden>
+    <div class="completion-box">
+      <div class="completion-medal" aria-hidden="true">🏅</div>
+      <h2 data-i18n="complete_title">Geschafft!</h2>
+      <p class="completion-summary" id="completeSummary"></p>
+      <p class="completion-summary" data-i18n="complete_message">Sie haben heute etwas Gutes für Ihre Beweglichkeit, Ihr Gleichgewicht und Ihr Gedächtnis getan.</p>
+      <button class="btn" id="completeRestartBtn" data-i18n="btn_tomorrow">Morgen weitermachen</button>
+    </div>
+  </section>
+
+  </div>
+</main>
+<canvas id="confettiCanvas" style="position:fixed;inset:0;pointer-events:none;z-index:999;"></canvas>
+<!-- ================= FOOTER ================= -->
+<footer class="footer">
+  <div class="footer-content">
+    <p data-i18n="footer_p1">
+      <strong>MoveOn</strong><br>
+      Prototypische KI-gestützte Anwendung zur digitalen Bewegungsförderung
+    </p>
+
+    <p data-i18n="footer_p2">
+      Entwickelt im Forschungsprojekt
+      <em>„MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“</em>
+      des <strong>Fachbereichs Gesundheitswissenschaften der Hochschule Bochum</strong>.
+    </p>
+
+    <p data-i18n="footer_p3">
+      Die Anwendung dient ausschließlich Forschungs-, Lehr- und Demonstrationszwecken
+      und stellt kein Medizinprodukt sowie keine medizinische oder therapeutische
+      Beratung dar. Teile der Inhalte wurden mit Unterstützung von KI-Systemen erstellt.
+    </p>
+
+    <p data-i18n="footer_p4">
+      <strong>Datenschutz:</strong> Innerhalb dieser Anwendung werden keine
+      personenbezogenen Daten erhoben, gespeichert oder dauerhaft verarbeitet.
+      Die Nutzung erfolgt auf eigene Verantwortung. Bitte achten Sie auf ausreichendes
+      Aufwärmen, eine sichere Umgebung und brechen Sie Übungen bei Beschwerden sofort ab.
+    </p>
+
+    <p>
+      <strong>Hochschule Bochum – Fachbereich Gesundheitswissenschaften</strong><br>
+      <span data-i18n="footer_ansprechpartner">Ansprechpartner</span>: Dr. Alina Napetschnig &amp; Prof. Dr. Wolfgang Deiters<br>
+      <span data-i18n="footer_kontakt_label">Kontakt</span>:
+      <a href="mailto:alina.napetschnig@hs-bochum.de">alina.napetschnig@hs-bochum.de</a> |
+      <a href="mailto:wolfgang.deiters@hs-bochum.de">wolfgang.deiters@hs-bochum.de</a>
+    </p>
+
+    <div class="footer-links">
+      <a href="#" onclick="event.preventDefault(); openModal('impressumModal');" data-i18n="footer_link_impressum">Impressum</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('datenschutzModal');" data-i18n="footer_link_datenschutz">Datenschutz</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('haftungModal');" data-i18n="footer_link_haftung">Haftung &amp; Sicherheit</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('kontaktModal');" data-i18n="footer_link_kontakt">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= IMPRESSUM ================= -->
+
+<div id="impressumModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('impressumModal')">&times;</span>
+    <h2 data-i18n="modal_impressum_title">Impressum</h2>
+
+    <p data-i18n="modal_impressum_p1">
+      <strong>Verantwortlich für den Inhalt dieser prototypischen Anwendung:</strong>
+    </p>
+
+    <p>
+      Hochschule Bochum<br>
+      Fachbereich Gesundheitswissenschaften<br>
+      Forschungsprojekt <em>„MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“</em>
+    </p>
+
+    <p>
+      Ansprechpartner:<br>
+      Dr. Alina Napetschnig<br>
+      Prof. Dr. Wolfgang Deiters
+    </p>
+
+    <p>
+      E-Mail:<br>
+      alina.napetschnig@hs-bochum.de<br>
+      wolfgang.deiters@hs-bochum.de
+    </p>
+
+    <p data-i18n="modal_impressum_p3">
+      Diese Anwendung wurde im Rahmen eines Forschungs- und Entwicklungsprojekts erstellt
+      und dient ausschließlich wissenschaftlichen, didaktischen und demonstrativen Zwecken.
+    </p>
+
+    <p data-i18n="modal_impressum_stand">Stand: Juli 2026</p>
+  </div>
+</div>
+
+<!-- ================= DATENSCHUTZ ================= -->
+
+<div id="datenschutzModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('datenschutzModal')">&times;</span>
+    <h2 data-i18n="modal_datenschutz_title">Datenschutz</h2>
+
+    <p data-i18n="modal_datenschutz_p1">
+      Diese prototypische HTML-Anwendung wurde so konzipiert, dass innerhalb der Anwendung
+      keine personenbezogenen Daten erhoben, gespeichert oder dauerhaft verarbeitet werden.
+    </p>
+
+    <ul>
+      <li data-i18n="modal_datenschutz_li1">keine Registrierung,</li>
+      <li data-i18n="modal_datenschutz_li2">keine Benutzerkonten,</li>
+      <li data-i18n="modal_datenschutz_li3">keine Speicherung von Eingaben,</li>
+      <li data-i18n="modal_datenschutz_li4">keine Bewegungs- oder Gesundheitsprofile,</li>
+      <li data-i18n="modal_datenschutz_li5">keine Weitergabe personenbezogener Daten an Dritte.</li>
+    </ul>
+
+    <p data-i18n="modal_datenschutz_p2">
+      Eine Identifizierung einzelner Nutzerinnen oder Nutzer über diese Anwendung ist nicht vorgesehen.
+    </p>
+
+    <p data-i18n="modal_datenschutz_p3">
+      Sofern die Anwendung über einen Webserver bereitgestellt wird, können technisch notwendige
+      Server-Logdaten (z. B. IP-Adresse, Datum, Uhrzeit oder Browsertyp) durch den jeweiligen
+      Hosting-Anbieter verarbeitet werden. Diese Verarbeitung erfolgt außerhalb der Anwendung selbst
+      und liegt in der Verantwortung des Hosting-Anbieters.
+    </p>
+
+    <p data-i18n="modal_datenschutz_p4">
+      Die Anwendung verwendet keine Tracking-, Analyse- oder Marketingdienste
+      (z. B. Google Analytics, Meta Pixel oder vergleichbare Technologien).
+    </p>
+  </div>
+</div>
+
+<!-- ================= HAFTUNG & SICHERHEIT ================= -->
+
+<div id="haftungModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('haftungModal')">&times;</span>
+    <h2 data-i18n="modal_haftung_title">Haftung &amp; Sicherheit</h2>
+
+    <p data-i18n="modal_haftung_p1">
+      Diese Anwendung ist ein <strong>nicht-medizinischer, wissenschaftlicher Demonstrator</strong>
+      im Rahmen des Forschungsprojekts MoveOn der Hochschule Bochum. Sie ersetzt keine ärztliche,
+      physiotherapeutische oder sonstige fachliche Beratung.
+    </p>
+
+    <p data-i18n="modal_haftung_p2">
+      <strong>Vor der Nutzung bitte beachten:</strong>
+    </p>
+    <ul>
+      <li data-i18n="modal_haftung_li1">Übungen nur in einem sicheren, aufgeräumten Umfeld mit ausreichend Platz durchführen.</li>
+      <li data-i18n="modal_haftung_li2">Vor körperlicher Aktivität angemessen aufwärmen.</li>
+      <li data-i18n="modal_haftung_li3">Auf den eigenen Körper hören und bei Schmerzen, Schwindel oder Unwohlsein die Übung sofort abbrechen.</li>
+      <li data-i18n="modal_haftung_li4">Bei bestehenden gesundheitlichen Einschränkungen vorab ärztlichen Rat einholen.</li>
+      <li data-i18n="modal_haftung_li5">Kinder sollten die Anwendung möglichst in Begleitung einer erwachsenen Aufsichtsperson nutzen.</li>
+    </ul>
+
+    <p data-i18n="modal_haftung_p3">
+      Für die Inhalte wird keine Haftung hinsichtlich Vollständigkeit, Aktualität oder gesundheitlicher
+      Folgen der Nutzung übernommen. Die Nutzung erfolgt auf eigene Verantwortung.
+    </p>
+  </div>
+</div>
+
+<!-- ================= KONTAKT ================= -->
+
+<div id="kontaktModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('kontaktModal')">&times;</span>
+    <h2 data-i18n="modal_kontakt_title">Kontakt</h2>
+
+    <p data-i18n="modal_kontakt_p1">
+      Bei Fragen, Anregungen oder Feedback zum Forschungsprojekt MoveOn erreichen Sie uns unter:
+    </p>
+
+    <p>
+      <strong>Hochschule Bochum</strong><br>
+      Fachbereich Gesundheitswissenschaften<br>
+      Forschungsprojekt „MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“
+    </p>
+
+    <p>
+      Dr. Alina Napetschnig<br>
+      E-Mail: <a href="mailto:alina.napetschnig@hs-bochum.de">alina.napetschnig@hs-bochum.de</a>
+    </p>
+    <p>
+      Prof. Dr. Wolfgang Deiters<br>
+      E-Mail: <a href="mailto:wolfgang.deiters@hs-bochum.de">wolfgang.deiters@hs-bochum.de</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= WHO-EMPFEHLUNGEN MODAL ================= -->
+<div id="whoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('whoModal')">&times;</span>
+    <h2 data-i18n="who_title">WHO-Empfehlungen</h2>
+    <h3 style="color:var(--hs-red); margin-bottom:.4rem;" data-i18n="who_subtitle">Bewegungsempfehlungen für ältere Erwachsene</h3>
+    <div class="who-cards">
+      <div class="who-card">
+        <span class="who-icon" aria-hidden="true">🚶</span>
+        <div data-i18n="who_card1">Mindestens 150 Minuten Bewegung pro Woche – zum Beispiel zügiges Gehen.</div>
+      </div>
+      <div class="who-card">
+        <span class="who-icon" aria-hidden="true">💪</span>
+        <div data-i18n="who_card2">Zusätzlich Kraftübungen an 2 Tagen pro Woche für die wichtigsten Muskelgruppen.</div>
+      </div>
+      <div class="who-card">
+        <span class="who-icon" aria-hidden="true">⚖️</span>
+        <div data-i18n="who_card3">Gleichgewichtsübungen zur Sturzvorbeugung, am besten mehrmals pro Woche.</div>
+      </div>
+      <div class="who-card">
+        <span class="who-icon" aria-hidden="true">🪑</span>
+        <div data-i18n="who_card4">Lange Sitzzeiten regelmäßig unterbrechen – schon kurze Pausen helfen.</div>
+      </div>
+    </div>
+    <h3 style="color:var(--hs-red); margin-bottom:.4rem;" data-i18n="who_tips_title">Tipps für den Alltag</h3>
+    <ul class="who-tips-list">
+      <li data-i18n="who_tip1">Beim Telefonieren aufstehen und ein paar Schritte gehen.</li>
+      <li data-i18n="who_tip2">Kurze Wege zu Fuß statt mit dem Auto zurücklegen.</li>
+      <li data-i18n="who_tip3">Gemeinsam bewegen motiviert mehr als allein.</li>
+      <li data-i18n="who_tip4">Jede Bewegung zählt – auch kleine Einheiten sind wertvoll.</li>
+    </ul>
+    <p style="font-size:.85rem; color:#666;" data-i18n="who_disclaimer">
+      Diese Informationen fassen allgemeine, öffentlich zugängliche Empfehlungen der WHO zusammen und ersetzen keine individuelle medizinische Beratung. Bei spezifischen Fragen wenden Sie sich bitte an eine Ärztin, einen Arzt oder eine andere Fachperson.
+    </p>
+  </div>
+</div>
+
+<script src="assets/js/senioren-spiele.js"></script>
+<script src="assets/js/senioren.js"></script>
+</body>
+</html>

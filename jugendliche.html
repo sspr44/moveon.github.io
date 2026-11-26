@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoveOn – Dein Feed | Hochschule Bochum</title>
+<meta name="description" content="MoveOn Jugendliche-Version: Dein Bewegungs-Feed im Social-Media-Stil. Ein Forschungsprojekt der Hochschule Bochum.">
+<meta name="theme-color" content="#C4002F">
+<link rel="icon" type="image/png" href="assets/img/hsbo-logo.png">
+<link rel="apple-touch-icon" href="assets/img/hsbo-logo.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="MoveOn – Dein Feed | Hochschule Bochum">
+<meta property="og:description" content="MoveOn Jugendliche-Version: Dein Bewegungs-Feed im Social-Media-Stil. Ein Forschungsprojekt der Hochschule Bochum.">
+<meta property="og:image" content="assets/img/hsbo-logo.png">
+<link rel="stylesheet" href="assets/css/jugendliche.css">
+</head>
+<body>
+<header class="app-header">
+  <div class="container header-inner">
+    <div class="brand">
+      <img class="hsbo-logo-img" src="assets/img/hsbo-logo.png" alt="Logo der Hochschule Bochum">
+      <div class="brand-text">
+        <strong>MoveOn</strong>
+        <small data-i18n="subtitle">Digitale Bewegungsförderung – Hochschule Bochum</small>
+      </div>
+    </div>
+    <div class="header-right">
+      <nav class="main-nav" aria-label="Hauptnavigation">
+        <button class="parent-info-btn" onclick="openModal('parentInfoModal')"><span data-i18n="nav_parents">Für Eltern &amp; Begleitpersonen</span></button>
+      </nav>
+      <button class="parent-info-btn" id="changeAudienceBtn" data-i18n="nav_change_audience">Zielgruppe wechseln</button>
+      <select id="langSelect" aria-label="Sprache wählen">
+        <option value="de">Deutsch</option>
+        <option value="en">English</option>
+        <option value="es">Español</option>
+        <option value="tr">Türkçe</option>
+        <option value="ar">العربية</option>
+      </select>
+    </div>
+  </div>
+</header>
+<!-- ================= ENTRY GATE (links to the MoveOn platform) ================= -->
+<div id="audienceGate">
+  <div class="gate-card">
+    <h1 data-i18n="gate_title">Für wen suchst du heute Bewegungsangebote?</h1>
+    <p class="gate-lead" data-i18n="gate_subtitle">Wähle eine Gruppe aus – die Seite passt sich sofort an.</p>
+    <div class="gate-grid">
+      <button class="gate-option" data-audience="kind">
+        <span class="emoji" aria-hidden="true">🧒</span>
+        <span class="gate-name" data-i18n="gate_kind_name">Kinder</span>
+        <span class="gate-age" data-i18n="gate_kind_age">6–12 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="jugend">
+        <span class="emoji" aria-hidden="true">🧑‍🎤</span>
+        <span class="gate-name" data-i18n="gate_jugend_name">Jugendliche</span>
+        <span class="gate-age" data-i18n="gate_jugend_age">13–17 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="erwachsene">
+        <span class="emoji" aria-hidden="true">🧑‍💼</span>
+        <span class="gate-name" data-i18n="gate_erwachsene_name">Erwachsene</span>
+        <span class="gate-age" data-i18n="gate_erwachsene_age">18–64 Jahre</span>
+      </button>
+      <button class="gate-option" data-audience="senior">
+        <span class="emoji" aria-hidden="true">🧓</span>
+        <span class="gate-name" data-i18n="gate_senior_name">Senior*innen</span>
+        <span class="gate-age" data-i18n="gate_senior_age">65+ Jahre</span>
+      </button>
+    </div>
+  </div>
+</div>
+<main class="container">
+<div id="appContent">
+  <!-- ================= ONBOARDING (minimal, app-style) ================= -->
+  <section id="smOnboard" class="sm-onboard">
+    <div class="emoji" aria-hidden="true">🎧</div>
+    <h2>Erstelle dein Profil</h2>
+    <p>Wie sollen wir dich in deinem Feed nennen?</p>
+    <input type="text" id="smNameInput" placeholder="Dein Name" autocomplete="given-name">
+    <button class="sm-onboard-btn" id="smNameContinue">Los geht's 🚀</button>
+    <button class="sm-onboard-skip" id="smNameSkip">Ohne Namen weiter</button>
+  </section>
+
+  <!-- ================= MAIN FEED APP SHELL ================= -->
+  <div class="sm-app" id="smApp" hidden>
+    <div class="sm-topbar">
+      <button class="sm-tab active">Für dich</button>
+      <button class="sm-tab" id="smFollowingTab">Erledigt</button>
+      <button class="sm-who-btn" id="smWhoBtn" title="WHO-Tipps" aria-label="WHO-Tipps">ℹ️</button>
+    </div>
+    <div class="sm-stories-bar" id="smStoriesBar"></div>
+    <div class="sm-feed" id="smFeed"></div>
+    <nav class="sm-bottomnav">
+      <button class="sm-nav-btn active" data-nav="feed">🏠<span>Feed</span></button>
+      <button class="sm-nav-btn sm-nav-streak" data-nav="feed" id="smStreakNav">🔥<span>Streak</span><span class="streak-dot" id="smStreakDot" hidden>0</span></button>
+      <button class="sm-nav-btn" data-nav="profile">👤<span>Profil</span></button>
+    </nav>
+  </div>
+
+  <!-- ================= PROFILE SCREEN ================= -->
+  <div class="sm-profile-screen" id="smProfileScreen" hidden>
+    <div class="sm-profile-header">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.6rem;">
+        <button class="sm-back-btn" id="smProfileBack" aria-label="Zurück">←</button>
+        <span style="font-weight:800; font-size:.95rem;">Profil</span>
+        <span style="width:34px;"></span>
+      </div>
+      <div class="sm-profile-avatar" id="smAvatarEmoji">🧑‍🎤</div>
+      <div class="sm-profile-name" id="smProfileName">Du</div>
+      <div class="sm-profile-handle">@moveon_user</div>
+      <button class="sm-profile-editbtn" id="smEditNameBtn">Namen ändern</button>
+      <div class="sm-stats-row">
+        <div class="sm-stat"><b id="smStatPosts">0</b><span>Challenges</span></div>
+        <div class="sm-stat"><b id="smStatLikes">0</b><span>Likes</span></div>
+        <div class="sm-stat"><b id="smStatStreak">0</b><span>Streak</span></div>
+      </div>
+    </div>
+    <div class="sm-profile-body">
+      <div class="sm-section-title">Abzeichen</div>
+      <div class="sm-badge-grid" id="smBadgeGrid"></div>
+    </div>
+  </div>
+
+  <!-- ================= SHARED CHALLENGE OVERLAY ================= -->
+  <div class="modal-overlay" id="gameOverlay">
+    <div class="game-modal ex-modal">
+      <button class="close-x" id="closeGameModal" aria-label="Schließen">✕</button>
+      <div id="exContent" class="ex-content"></div>
+      <div class="game-modal-footer">
+        <button class="btn secondary" id="finishGameBtn">✅ Challenge geschafft!</button>
+        <p id="gameResultText"></p>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+  <div class="sm-toast" id="smToast"></div>
+
+  <!-- ================= WHO INFO MODAL ================= -->
+  <div id="whoModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('whoModal')">&times;</span>
+      <h2>WHO-Empfehlungen für dich (13–17 Jahre)</h2>
+      <div class="who-adult-cards">
+        <div class="who-adult-card"><span class="who-icon" aria-hidden="true">⏱️</span><div>Mindestens 60 Minuten moderate bis intensive Bewegung <strong>an jedem Tag</strong> der Woche.</div></div>
+        <div class="who-adult-card"><span class="who-icon" aria-hidden="true">💪</span><div>An mindestens 3 Tagen pro Woche: Übungen, die Muskeln und Knochen kräftigen.</div></div>
+        <div class="who-adult-card"><span class="who-icon" aria-hidden="true">📱</span><div>Sitzzeiten und Bildschirmzeit reduzieren – Bewegungspausen einbauen.</div></div>
+        <div class="who-adult-card"><span class="who-icon" aria-hidden="true">✅</span><div>Jede zusätzliche Bewegung zählt – auch kurze Challenges bringen etwas!</div></div>
+      </div>
+      <p style="font-size:.85rem; color:#666; margin-top:.8rem;">
+        Diese Infos fassen öffentlich zugängliche Empfehlungen der WHO zusammen und ersetzen keine medizinische Beratung.
+      </p>
+    </div>
+  </div>
+
+</div>
+</main>
+<footer class="footer">
+  <div class="footer-content">
+    <p data-i18n="footer_p1">
+      <strong>MoveOn</strong><br>
+      Prototypische KI-gestützte Anwendung zur digitalen Bewegungsförderung
+    </p>
+
+    <p data-i18n="footer_p2">
+      Entwickelt im Forschungsprojekt
+      <em>„MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“</em>
+      des <strong>Fachbereichs Gesundheitswissenschaften der Hochschule Bochum</strong>.
+    </p>
+
+    <p data-i18n="footer_p3">
+      Die Anwendung dient ausschließlich Forschungs-, Lehr- und Demonstrationszwecken
+      und stellt kein Medizinprodukt sowie keine medizinische oder therapeutische
+      Beratung dar. Teile der Inhalte wurden mit Unterstützung von KI-Systemen erstellt.
+    </p>
+
+    <p data-i18n="footer_p4">
+      <strong>Datenschutz:</strong> Innerhalb dieser Anwendung werden keine
+      personenbezogenen Daten erhoben, gespeichert oder dauerhaft verarbeitet.
+      Die Nutzung erfolgt auf eigene Verantwortung. Bitte achten Sie auf ausreichendes
+      Aufwärmen, eine sichere Umgebung und brechen Sie Übungen bei Beschwerden sofort ab.
+    </p>
+
+    <p>
+      <strong>Hochschule Bochum – Fachbereich Gesundheitswissenschaften</strong><br>
+      <span data-i18n="footer_ansprechpartner">Ansprechpartner</span>: Dr. Alina Napetschnig &amp; Prof. Dr. Wolfgang Deiters<br>
+      <span data-i18n="footer_kontakt_label">Kontakt</span>:
+      <a href="mailto:alina.napetschnig@hs-bochum.de">alina.napetschnig@hs-bochum.de</a> |
+      <a href="mailto:wolfgang.deiters@hs-bochum.de">wolfgang.deiters@hs-bochum.de</a>
+    </p>
+
+    <div class="footer-links">
+      <a href="#" onclick="event.preventDefault(); openModal('impressumModal');" data-i18n="footer_link_impressum">Impressum</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('datenschutzModal');" data-i18n="footer_link_datenschutz">Datenschutz</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('haftungModal');" data-i18n="footer_link_haftung">Haftung &amp; Sicherheit</a> |
+      <a href="#" onclick="event.preventDefault(); openModal('kontaktModal');" data-i18n="footer_link_kontakt">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= IMPRESSUM ================= -->
+
+<div id="impressumModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('impressumModal')">&times;</span>
+    <h2 data-i18n="modal_impressum_title">Impressum</h2>
+
+    <p data-i18n="modal_impressum_p1">
+      <strong>Verantwortlich für den Inhalt dieser prototypischen Anwendung:</strong>
+    </p>
+
+    <p>
+      Hochschule Bochum<br>
+      Fachbereich Gesundheitswissenschaften<br>
+      Forschungsprojekt <em>„MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“</em>
+    </p>
+
+    <p>
+      Ansprechpartner:<br>
+      Dr. Alina Napetschnig<br>
+      Prof. Dr. Wolfgang Deiters
+    </p>
+
+    <p>
+      E-Mail:<br>
+      alina.napetschnig@hs-bochum.de<br>
+      wolfgang.deiters@hs-bochum.de
+    </p>
+
+    <p data-i18n="modal_impressum_p3">
+      Diese Anwendung wurde im Rahmen eines Forschungs- und Entwicklungsprojekts erstellt
+      und dient ausschließlich wissenschaftlichen, didaktischen und demonstrativen Zwecken.
+    </p>
+
+    <p data-i18n="modal_impressum_stand">Stand: Juli 2026</p>
+  </div>
+</div>
+
+<!-- ================= DATENSCHUTZ ================= -->
+
+<div id="datenschutzModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('datenschutzModal')">&times;</span>
+    <h2 data-i18n="modal_datenschutz_title">Datenschutz</h2>
+
+    <p data-i18n="modal_datenschutz_p1">
+      Diese prototypische HTML-Anwendung wurde so konzipiert, dass innerhalb der Anwendung
+      keine personenbezogenen Daten erhoben, gespeichert oder dauerhaft verarbeitet werden.
+    </p>
+
+    <ul>
+      <li data-i18n="modal_datenschutz_li1">keine Registrierung,</li>
+      <li data-i18n="modal_datenschutz_li2">keine Benutzerkonten,</li>
+      <li data-i18n="modal_datenschutz_li3">keine Speicherung von Eingaben,</li>
+      <li data-i18n="modal_datenschutz_li4">keine Bewegungs- oder Gesundheitsprofile,</li>
+      <li data-i18n="modal_datenschutz_li5">keine Weitergabe personenbezogener Daten an Dritte.</li>
+    </ul>
+
+    <p data-i18n="modal_datenschutz_p2">
+      Eine Identifizierung einzelner Nutzerinnen oder Nutzer über diese Anwendung ist nicht vorgesehen.
+    </p>
+
+    <p data-i18n="modal_datenschutz_p3">
+      Sofern die Anwendung über einen Webserver bereitgestellt wird, können technisch notwendige
+      Server-Logdaten (z. B. IP-Adresse, Datum, Uhrzeit oder Browsertyp) durch den jeweiligen
+      Hosting-Anbieter verarbeitet werden. Diese Verarbeitung erfolgt außerhalb der Anwendung selbst
+      und liegt in der Verantwortung des Hosting-Anbieters.
+    </p>
+
+    <p data-i18n="modal_datenschutz_p4">
+      Die Anwendung verwendet keine Tracking-, Analyse- oder Marketingdienste
+      (z. B. Google Analytics, Meta Pixel oder vergleichbare Technologien).
+    </p>
+  </div>
+</div>
+
+<!-- ================= HAFTUNG & SICHERHEIT ================= -->
+
+<div id="haftungModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('haftungModal')">&times;</span>
+    <h2 data-i18n="modal_haftung_title">Haftung &amp; Sicherheit</h2>
+
+    <p data-i18n="modal_haftung_p1">
+      Diese Anwendung ist ein <strong>nicht-medizinischer, wissenschaftlicher Demonstrator</strong>
+      im Rahmen des Forschungsprojekts MoveOn der Hochschule Bochum. Sie ersetzt keine ärztliche,
+      physiotherapeutische oder sonstige fachliche Beratung.
+    </p>
+
+    <p data-i18n="modal_haftung_p2">
+      <strong>Vor der Nutzung bitte beachten:</strong>
+    </p>
+    <ul>
+      <li data-i18n="modal_haftung_li1">Übungen nur in einem sicheren, aufgeräumten Umfeld mit ausreichend Platz durchführen.</li>
+      <li data-i18n="modal_haftung_li2">Vor körperlicher Aktivität angemessen aufwärmen.</li>
+      <li data-i18n="modal_haftung_li3">Auf den eigenen Körper hören und bei Schmerzen, Schwindel oder Unwohlsein die Übung sofort abbrechen.</li>
+      <li data-i18n="modal_haftung_li4">Bei bestehenden gesundheitlichen Einschränkungen vorab ärztlichen Rat einholen.</li>
+      <li data-i18n="modal_haftung_li5">Kinder sollten die Anwendung möglichst in Begleitung einer erwachsenen Aufsichtsperson nutzen.</li>
+    </ul>
+
+    <p data-i18n="modal_haftung_p3">
+      Für die Inhalte wird keine Haftung hinsichtlich Vollständigkeit, Aktualität oder gesundheitlicher
+      Folgen der Nutzung übernommen. Die Nutzung erfolgt auf eigene Verantwortung.
+    </p>
+  </div>
+</div>
+
+<!-- ================= KONTAKT ================= -->
+
+<div id="kontaktModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('kontaktModal')">&times;</span>
+    <h2 data-i18n="modal_kontakt_title">Kontakt</h2>
+
+    <p data-i18n="modal_kontakt_p1">
+      Bei Fragen, Anregungen oder Feedback zum Forschungsprojekt MoveOn erreichen Sie uns unter:
+    </p>
+
+    <p>
+      <strong>Hochschule Bochum</strong><br>
+      Fachbereich Gesundheitswissenschaften<br>
+      Forschungsprojekt „MoveOn – Zielgruppengerechte Bewegungsförderung durch innovative,
+      digitale Gesundheitstechnologien“
+    </p>
+
+    <p>
+      Dr. Alina Napetschnig<br>
+      E-Mail: <a href="mailto:alina.napetschnig@hs-bochum.de">alina.napetschnig@hs-bochum.de</a>
+    </p>
+    <p>
+      Prof. Dr. Wolfgang Deiters<br>
+      E-Mail: <a href="mailto:wolfgang.deiters@hs-bochum.de">wolfgang.deiters@hs-bochum.de</a>
+    </p>
+  </div>
+</div>
+
+<!-- ================= INFO-MODAL FUER BEGLEITPERSONEN ================= -->
+
+<div id="parentInfoModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('parentInfoModal')">&times;</span>
+    <h2 data-i18n="pi_title">Für Eltern &amp; Begleitpersonen</h2>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_why">Warum ist Bewegung in der Jugend so wichtig?</h3>
+    <p data-i18n="pi_p_why">Regelmäßige Bewegung unterstützt Jugendliche in einer entscheidenden Entwicklungsphase:</p>
+    <ul>
+      <li data-i18n="pi_li_body"><strong>Körperlich:</strong> stärkt Herz-Kreislauf-System, Knochendichte und Muskulatur in der Wachstumsphase.</li>
+      <li data-i18n="pi_li_motor"><strong>Motorisch:</strong> fördert Koordination, Reaktionsfähigkeit und Belastungssteuerung.</li>
+      <li data-i18n="pi_li_cognitive"><strong>Kognitiv:</strong> unterstützt Konzentration, Stressregulation und schulische Leistungsfähigkeit.</li>
+      <li data-i18n="pi_li_emotional"><strong>Emotional &amp; sozial:</strong> stärkt Selbstwirksamkeit, Stimmung und den Umgang mit Gleichaltrigen.</li>
+    </ul>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_who">Empfehlungen der Weltgesundheitsorganisation (WHO)</h3>
+    <p data-i18n="pi_p_who">Für Jugendliche im Alter von 13–17 Jahren empfiehlt die WHO:</p>
+    <div class="who-box">
+      <ul>
+        <li data-i18n="pi_who_li1">Mindestens <strong>60 Minuten pro Tag</strong> moderate bis intensive körperliche Aktivität, überwiegend aerober Art.</li>
+        <li data-i18n="pi_who_li2">An mindestens <strong>3 Tagen pro Woche</strong> zusätzlich muskel- und knochenstärkende Aktivitäten.</li>
+        <li data-i18n="pi_who_li3">Sitzende, bildschirmbasierte Freizeitaktivitäten sollten begrenzt werden.</li>
+        <li data-i18n="pi_who_li4">Auch kürzere Bewegungseinheiten unterhalb von 60 Minuten zählen und sind wertvoll.</li>
+      </ul>
+    </div>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_moveon">Wie unterstützt MoveOn dabei?</h3>
+    <p data-i18n="pi_p_moveon">MoveOn übersetzt diese Empfehlungen in kurze, motivierende Bewegungs-Missionen für zuhause, die Schule oder unterwegs:</p>
+    <ul>
+      <li data-i18n="pi_moveon_li1">Zwölf Bewegungs-Missionen, die allein oder im Koop-Modus mit Freund*innen gespielt werden können.</li>
+      <li data-i18n="pi_moveon_li2">Ein einfaches Tagesziel: <strong>3 abgeschlossene Missionen = ein erfolgreicher Tag</strong>, orientiert an der 60-Minuten-Empfehlung der WHO.</li>
+      <li data-i18n="pi_moveon_li3">Positives Feedback statt Leistungsdruck – keine öffentlichen Ranglisten oder Vergleiche zwischen Jugendlichen.</li>
+      <li data-i18n="pi_moveon_li4">Keine Registrierung und keine Speicherung personenbezogener Daten (siehe Datenschutzhinweise weiter unten).</li>
+    </ul>
+
+    <h3 style="color:var(--hs-red); margin-bottom:.3rem;" data-i18n="pi_h3_tips">Praktische Tipps für den Alltag</h3>
+    <ul>
+      <li data-i18n="pi_tips_li1">Jugendliche entscheiden am besten selbst, welche Mission zu ihrem Tag passt – Autonomie fördert die Motivation.</li>
+      <li data-i18n="pi_tips_li2">Ein kurzer, aber täglicher Rhythmus wirkt oft nachhaltiger als seltene, lange Trainingseinheiten.</li>
+      <li data-i18n="pi_tips_li3">Ausreichend Platz und ein rutschfester Untergrund erhöhen die Sicherheit bei aktiven Übungen.</li>
+      <li data-i18n="pi_tips_li4">Beschwerden oder Schmerzen sollten ernst genommen und die Übung entsprechend angepasst oder ausgelassen werden.</li>
+    </ul>
+
+    <p style="font-size:.85rem; color:#666;" data-i18n="pi_disclaimer">
+      Diese Informationen fassen allgemeine, öffentlich zugängliche Empfehlungen der WHO zusammen und ersetzen keine individuelle medizinische oder pädagogische Beratung. Bei spezifischen Fragen wenden Sie sich bitte an eine Ärztin, einen Arzt oder eine andere Fachperson.
+    </p>
+  </div>
+</div>
+
+
+<script src="assets/js/jugendliche.js"></script>
+</body>
+</html>
